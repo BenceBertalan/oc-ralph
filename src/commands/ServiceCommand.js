@@ -74,7 +74,7 @@ export class ServiceCommand {
     const issueOps = new IssueOperations(github, serviceLogger);
     const labelOps = new LabelOperations(github, serviceLogger);
     const prOps = new PullRequestOperations(github, serviceLogger);
-    const gitOps = new GitOperations(serviceLogger);
+    const gitOps = new GitOperations(serviceLogger, configManager.getRepoPath());
 
     // Create orchestrator factory (creates fresh instance for each issue)
     const orchestratorFactory = async () => {

@@ -49,7 +49,7 @@ export class ResumeCommand {
     const issueOps = new IssueOperations(github, this.logger);
     const labelOps = new LabelOperations(github, this.logger);
     const prOps = new PullRequestOperations(github, this.logger);
-    const gitOps = new GitOperations(this.logger);
+    const gitOps = new GitOperations(this.logger, configManager.getRepoPath());
     const jsonParser = new JSONParser();
     
     const stateManager = new StateManager(labelOps, issueOps, config, this.logger);

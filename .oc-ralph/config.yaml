@@ -46,6 +46,7 @@ agents:
 github:
   owner: BenceBertalan       # GitHub organization or username
   repo: OpenViewer           # Repository name
+  repoPath: /root/OpenViewer # Local path to the repository
   baseBranch: main           # Base branch for feature branches
   labelPrefix: "oc-ralph:"
   createPR: true

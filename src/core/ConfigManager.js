@@ -152,6 +152,10 @@ export class ConfigManager {
       throw new Error('Missing required config: github.owner and github.repo');
     }
 
+    if (!this.config.github?.repoPath) {
+      throw new Error('Missing required config: github.repoPath (local path to the repository)');
+    }
+
     // Validate agent configs
     const requiredAgents = ['architect', 'sculptor', 'sentinel', 'craftsman', 'validator'];
     for (const agent of requiredAgents) {
@@ -179,6 +183,13 @@ export class ConfigManager {
    */
   getGitHubRepo() {
     return `${this.config.github.owner}/${this.config.github.repo}`;
+  }
+
+  /**
+   * Get local repository path
+   */
+  getRepoPath() {
+    return this.config.github.repoPath;
   }
 
   /**
@@ -233,6 +244,7 @@ agents:
 github:
   owner: YOUR_GITHUB_ORG       # GitHub organization or username
   repo: YOUR_REPO_NAME          # Repository name
+  repoPath: /path/to/your-repo  # Local path to the repository
   baseBranch: main              # Base branch for feature branches
   labelPrefix: "oc-ralph:"
   createPR: true

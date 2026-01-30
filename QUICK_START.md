@@ -61,26 +61,25 @@ This creates:
 
 Edit `.oc-ralph/config.yaml`:
 
-```json
-{
-  "opencode": {
-    "baseUrl": "http://localhost:4096"  // ← Verify this URL
-  },
-  "github": {
-    "owner": "your-org",                // ← Change this
-    "repo": "your-repo",                // ← Change this
-    "baseBranch": "main"                // ← Verify your default branch
-  },
-  "agents": {
-    // Agent configs - can leave as default for now
-  }
-}
+```yaml
+opencode:
+  baseUrl: http://localhost:4096  # ← Verify this URL
+
+github:
+  owner: your-org                 # ← Change this
+  repo: your-repo                 # ← Change this
+  repoPath: /path/to/your-repo    # ← Set local repository path
+  baseBranch: main                # ← Verify your default branch
+
+agents:
+  # Agent configs - can leave as default for now
 ```
 
 Minimum required changes:
 1. `github.owner` - Your GitHub org/username
 2. `github.repo` - Your repository name
-3. Verify `opencode.baseUrl` is correct
+3. `github.repoPath` - Local path to your repository
+4. Verify `opencode.baseUrl` is correct
 
 ## First Orchestration (10 minutes)
 
@@ -237,14 +236,10 @@ cat logs/debug/Architect-*.json
 
 **Agent timeout**
 → Increase timeout in `.oc-ralph/config.yaml`:
-```json
-{
-  "agents": {
-    "architect": {
-      "timeout": 300  // Increase from 180
-    }
-  }
-}
+```yaml
+agents:
+  architect:
+    timeout: 300  # Increase from 180
 ```
 
 ## What Happens Next (Future Implementation)

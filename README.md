@@ -43,6 +43,7 @@ Edit `.oc-ralph/config.yaml`:
 github:
   owner: your-username
   repo: your-repo
+  repoPath: /path/to/your/local/repo  # Local path to the repository
   baseBranch: main
 
 agents:

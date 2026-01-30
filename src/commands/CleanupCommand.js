@@ -29,7 +29,7 @@ export class CleanupCommand {
     const github = new GitHubClient(this.logger);
     const issueOps = new IssueOperations(github, this.logger);
     const labelOps = new LabelOperations(github, this.logger);
-    const gitOps = new GitOperations(this.logger);
+    const gitOps = new GitOperations(this.logger, configManager.getRepoPath());
     
     const stateManager = new StateManager(labelOps, issueOps, config, this.logger);
     const worktreeManager = new WorktreeManager(gitOps, labelOps, config, this.logger);

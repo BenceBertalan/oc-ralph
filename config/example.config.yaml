@@ -46,6 +46,7 @@ agents:
 github:
   owner: your-org       # GitHub organization or username
   repo: your-repo       # Repository name
+  repoPath: /path/to/your-repo  # Local path to the repository
   baseBranch: main      # Base branch for feature branches
   labelPrefix: "oc-ralph:"
   createPR: true
