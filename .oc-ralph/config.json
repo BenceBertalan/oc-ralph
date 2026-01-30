@@ -1,0 +1,115 @@
+{
+  "_comment": "oc-ralph configuration - Fill in your values",
+  "opencode": {
+    "baseUrl": "http://localhost:4096",
+    "_comment_baseUrl": "OpenCode server URL",
+    "timeout": 300,
+    "retries": 3,
+    "pollInterval": 2000
+  },
+  "agents": {
+    "_comment": "Configure AI models for each agent type",
+    "architect": {
+      "model": {
+        "providerID": "openai",
+        "_comment_providerID": "Options: openai, anthropic, google, etc.",
+        "modelID": "gpt-5.2-codex",
+        "_comment_modelID": "Model identifier"
+      },
+      "agent": "NightMutyur",
+      "_comment_agent": "OpenCode agent name to use",
+      "timeout": 180
+    },
+    "sculptor": {
+      "model": {
+        "providerID": "openai",
+        "modelID": "gpt-5.2-codex"
+      },
+      "agent": "NightMutyur",
+      "timeout": 180
+    },
+    "sentinel": {
+      "model": {
+        "providerID": "openai",
+        "modelID": "gpt-5.2-codex"
+      },
+      "agent": "NightMutyur",
+      "timeout": 180
+    },
+    "craftsman": {
+      "model": {
+        "providerID": "openai",
+        "modelID": "gpt-5.2-codex"
+      },
+      "agent": "NightMutyur",
+      "timeout": 600
+    },
+    "validator": {
+      "model": {
+        "providerID": "openai",
+        "modelID": "gpt-5.2-codex"
+      },
+      "agent": "NightMutyur",
+      "timeout": 300
+    }
+  },
+  "github": {
+    "owner": "BenceBertalan",
+    "_comment_owner": "GitHub organization or username",
+    "repo": "OpenViewer",
+    "_comment_repo": "Repository name",
+    "baseBranch": "main",
+    "_comment_baseBranch": "Base branch for feature branches",
+    "labelPrefix": "oc-ralph:",
+    "createPR": true,
+    "autoMergePR": false,
+    "closeSubIssuesOnCompletion": false
+  },
+  "worktree": {
+    "basePath": "/tmp/oc-ralph-worktrees",
+    "_comment_basePath": "Directory for git worktrees",
+    "cleanupOnCompletion": false,
+    "cleanupOnFailure": false
+  },
+  "discord": {
+    "webhookUrl": "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
+    "_comment_webhookUrl": "Discord webhook URL (optional)",
+    "notificationLevel": "all-major-events",
+    "_comment_notificationLevel": "Options: all-major-events, stage-transitions, errors-only",
+    "mentionRoles": []
+  },
+  "execution": {
+    "parallel": {
+      "maxConcurrency": "auto",
+      "_comment_maxConcurrency": "Max parallel test agents",
+      "enableSmartDependencies": true
+    },
+    "retry": {
+      "maxAttempts": 3,
+      "backoffMultiplier": 2,
+      "initialDelayMs": 1000
+    },
+    "testing": {
+      "continueOnFailure": true,
+      "_comment_continueOnFailure": "Continue running tests after failures"
+    }
+  },
+  "statusTable": {
+    "updateIntervalSeconds": 60,
+    "_comment_updateIntervalSeconds": "Status table update frequency",
+    "showRetryHistory": true,
+    "maxRetryHistoryEntries": 5
+  },
+  "logging": {
+    "level": "info",
+    "_comment_level": "Options: debug, info, warn, error",
+    "debugMode": false,
+    "_comment_debugMode": "Enable verbose occlient logging",
+    "logDir": "./logs",
+    "debugLogDir": "./logs/debug"
+  },
+  "cron": {
+    "enabled": false,
+    "_comment_enabled": "Set to true if running from cron"
+  }
+}

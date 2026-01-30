@@ -1,0 +1,32 @@
+{
+  "name": "oc-ralph",
+  "version": "1.0.0",
+  "description": "GitHub issue-driven development orchestrator using AI agents and the ralph-loop methodology",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "oc-ralph": "./bin/oc-ralph.js"
+  },
+  "scripts": {
+    "start": "node bin/oc-ralph.js",
+    "test": "echo \"Tests to be implemented\" && exit 0"
+  },
+  "keywords": [
+    "ai",
+    "orchestration",
+    "github",
+    "automation",
+    "ralph-loop",
+    "opencode"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@opencode-ai/sdk": "^1.1.42",
+    "commander": "^14.0.2",
+    "form-data": "^4.0.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

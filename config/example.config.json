@@ -1,0 +1,92 @@
+{
+  "_comment": "Example oc-ralph configuration",
+  
+  "opencode": {
+    "baseUrl": "http://localhost:4096",
+    "timeout": 300,
+    "retries": 3,
+    "pollInterval": 2000
+  },
+  
+  "agents": {
+    "architect": {
+      "model": { "providerID": "openai", "modelID": "gpt-5.2-codex" },
+      "agent": "NightMutyur",
+      "timeout": 180
+    },
+    "sculptor": {
+      "model": { "providerID": "openai", "modelID": "gpt-5.2-codex" },
+      "agent": "NightMutyur",
+      "timeout": 180
+    },
+    "sentinel": {
+      "model": { "providerID": "openai", "modelID": "gpt-5.2-codex" },
+      "agent": "NightMutyur",
+      "timeout": 180
+    },
+    "craftsman": {
+      "model": { "providerID": "openai", "modelID": "gpt-5.2-codex" },
+      "agent": "NightMutyur",
+      "timeout": 600
+    },
+    "validator": {
+      "model": { "providerID": "openai", "modelID": "gpt-5.2-codex" },
+      "agent": "NightMutyur",
+      "timeout": 300
+    }
+  },
+  
+  "github": {
+    "owner": "your-org",
+    "repo": "your-repo",
+    "baseBranch": "main",
+    "labelPrefix": "oc-ralph:",
+    "createPR": true,
+    "autoMergePR": false,
+    "closeSubIssuesOnCompletion": true
+  },
+  
+  "worktree": {
+    "basePath": "/tmp/oc-ralph-worktrees",
+    "cleanupOnCompletion": false,
+    "cleanupOnFailure": false
+  },
+  
+  "discord": {
+    "webhookUrl": null,
+    "notificationLevel": "all-major-events",
+    "mentionRoles": []
+  },
+  
+  "execution": {
+    "parallel": {
+      "maxConcurrency": "auto",
+      "enableSmartDependencies": true
+    },
+    "retry": {
+      "maxAttempts": 3,
+      "backoffMultiplier": 2,
+      "initialDelayMs": 1000
+    },
+    "testing": {
+      "continueOnFailure": true
+    }
+  },
+  
+  "statusTable": {
+    "updateIntervalSeconds": 60,
+    "showRetryHistory": true,
+    "maxRetryHistoryEntries": 5
+  },
+  
+  "logging": {
+    "level": "info",
+    "debugMode": false,
+    "logDir": "./logs",
+    "debugLogDir": "./logs/debug"
+  },
+  
+  "cron": {
+    "enabled": false
+  }
+}
