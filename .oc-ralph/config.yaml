@@ -1,0 +1,96 @@
+# oc-ralph configuration
+
+opencode:
+  baseUrl: http://localhost:4096  # OpenCode server URL
+  timeout: 300
+  retries: 3
+  pollInterval: 2000
+
+agents:
+  # Configure AI models for each agent type
+  architect:
+    model:
+      providerID: openai  # Options: openai, anthropic, google, etc.
+      modelID: gpt-5.2-codex
+    agent: NightMutyur  # OpenCode agent name to use
+    timeout: 180
+  
+  sculptor:
+    model:
+      providerID: openai
+      modelID: gpt-5.2-codex
+    agent: NightMutyur
+    timeout: 180
+  
+  sentinel:
+    model:
+      providerID: openai
+      modelID: gpt-5.2-codex
+    agent: NightMutyur
+    timeout: 180
+  
+  craftsman:
+    model:
+      providerID: openai
+      modelID: gpt-5.2-codex
+    agent: NightMutyur
+    timeout: 600
+  
+  validator:
+    model:
+      providerID: openai
+      modelID: gpt-5.2-codex
+    agent: NightMutyur
+    timeout: 300
+
+github:
+  owner: BenceBertalan       # GitHub organization or username
+  repo: OpenViewer           # Repository name
+  baseBranch: main           # Base branch for feature branches
+  labelPrefix: "oc-ralph:"
+  createPR: true
+  autoMergePR: false
+  closeSubIssuesOnCompletion: false
+
+worktree:
+  basePath: /tmp/oc-ralph-worktrees  # Directory for git worktrees
+  cleanupOnCompletion: false
+  cleanupOnFailure: false
+
+discord:
+  webhookUrl: https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN
+  notificationLevel: all-major-events  # Options: all-major-events, stage-transitions, errors-only
+  mentionRoles: []
+
+execution:
+  parallel:
+    maxConcurrency: auto  # Max parallel test agents
+    enableSmartDependencies: true
+  retry:
+    maxAttempts: 3
+    backoffMultiplier: 2
+    initialDelayMs: 1000
+  testing:
+    continueOnFailure: true  # Continue running tests after failures
+
+statusTable:
+  updateIntervalSeconds: 60  # Status table update frequency
+  showRetryHistory: true
+  maxRetryHistoryEntries: 5
+
+logging:
+  level: info        # Options: debug, info, warn, error
+  debugMode: false   # Enable verbose occlient logging
+  logDir: ./logs
+  debugLogDir: ./logs/debug
+
+service:
+  enabled: true
+  port: 3000
+  host: 0.0.0.0
+  pollInterval: 60000          # GitHub polling interval in milliseconds (60s)
+  queueLabel: "oc-ralph:queue"
+  maxBufferSize: 10000
+
+cron:
+  enabled: false  # Set to true if running from cron

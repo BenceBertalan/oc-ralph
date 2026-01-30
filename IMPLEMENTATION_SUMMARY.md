@@ -56,7 +56,7 @@ oc-ralph status <issue-number>        # Check status
 
 ### 5. **Configuration** ✅
 
-- Config stored in `.oc-ralph/config.json`
+- Config stored in `.oc-ralph/config.yaml`
 - Example config with inline comments
 - Stage-specific agent configuration
 - Retry, parallel execution, and logging settings
@@ -125,7 +125,7 @@ oc-ralph init --repo your-org/your-repo
 
 ### 2. Configure
 
-Edit `.oc-ralph/config.json`:
+Edit `.oc-ralph/config.yaml`:
 - Set GitHub owner/repo
 - Configure OpenCode URL
 - Set agent models
@@ -219,7 +219,7 @@ cd /path/to/test/repo
 oc-ralph init --repo owner/repo
 
 # 5. Edit config
-vim .oc-ralph/config.json
+vim .oc-ralph/config.yaml
 
 # 6. Create a test issue on GitHub
 

@@ -30,9 +30,9 @@ export class InitCommand {
     console.log('   ✅ Directory created\n');
 
     // Step 3: Generate config file
-    console.log('3. Generating config.json with example data...');
+    console.log('3. Generating config.yaml with example data...');
     await this.generateConfigFile();
-    console.log('   ✅ Config file created at .oc-ralph/config.json\n');
+    console.log('   ✅ Config file created at .oc-ralph/config.yaml\n');
 
     // Step 4: Create GitHub labels (if not --no-labels)
     if (options.labels !== false && options.repo) {
@@ -75,9 +75,9 @@ logs/
 
   async generateConfigFile() {
     const exampleConfig = ConfigManager.generateExampleConfig();
-    const configPath = path.join('.oc-ralph', 'config.json');
+    const configPath = path.join('.oc-ralph', 'config.yaml');
     
-    fs.writeFileSync(configPath, JSON.stringify(exampleConfig, null, 2));
+    fs.writeFileSync(configPath, exampleConfig);
   }
 
   async createGitHubLabels(repo) {
@@ -90,7 +90,7 @@ logs/
 
   displayNextSteps() {
     console.log('📋 Next Steps:\n');
-    console.log('1. Edit .oc-ralph/config.json:');
+    console.log('1. Edit .oc-ralph/config.yaml:');
     console.log('   - Set your GitHub owner and repo');
     console.log('   - Configure OpenCode URL if not localhost:4096');
     console.log('   - Add Discord webhook URL (optional)');

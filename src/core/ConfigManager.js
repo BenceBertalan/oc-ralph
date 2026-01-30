@@ -3,9 +3,10 @@
  */
 import fs from 'fs';
 import path from 'path';
+import yaml from 'js-yaml';
 
 export class ConfigManager {
-  constructor(configPath = '.oc-ralph/config.json') {
+  constructor(configPath = '.oc-ralph/config.yaml') {
     this.configPath = configPath;
     this.config = null;
   }
@@ -14,16 +15,27 @@ export class ConfigManager {
    * Load configuration from file with CLI overrides
    */
   load(cliOverrides = {}) {
-    // Load from file
-    if (fs.existsSync(this.configPath)) {
-      const fileContent = fs.readFileSync(this.configPath, 'utf-8');
-      this.config = JSON.parse(fileContent);
-    } else {
-      throw new Error(`Config file not found: ${this.configPath}. Run 'oc-ralph init' first.`);
+    const yamlPath = this.configPath;
+    const jsonPath = this.configPath.replace('.yaml', '.json');
+    
+    // Check if YAML exists
+    if (fs.existsSync(yamlPath)) {
+      const fileContent = fs.readFileSync(yamlPath, 'utf-8');
+      this.config = yaml.load(fileContent);
     }
-
-    // Remove comment fields
-    this.config = this.removeComments(this.config);
+    // If no YAML but JSON exists, migrate automatically
+    else if (fs.existsSync(jsonPath)) {
+      console.log('⚠️  Found config.json - automatically migrating to config.yaml...');
+      this.migrateFromJSON(jsonPath, yamlPath);
+      // Load the newly created YAML
+      const fileContent = fs.readFileSync(yamlPath, 'utf-8');
+      this.config = yaml.load(fileContent);
+      console.log('✅ Migration complete! Using config.yaml\n');
+    }
+    // Neither exists
+    else {
+      throw new Error(`Config file not found: ${yamlPath}. Run 'oc-ralph init' first.`);
+    }
 
     // Apply CLI overrides
     this.config = this.mergeConfig(this.config, cliOverrides);
@@ -32,6 +44,45 @@ export class ConfigManager {
     this.validate();
 
     return this.config;
+  }
+
+  /**
+   * Migrate from JSON to YAML
+   */
+  migrateFromJSON(jsonPath, yamlPath) {
+    // Read JSON
+    const jsonContent = fs.readFileSync(jsonPath, 'utf-8');
+    const jsonConfig = JSON.parse(jsonContent);
+    
+    // Remove all _comment fields
+    const cleanConfig = this.removeComments(jsonConfig);
+    
+    // Convert to YAML with comments
+    const yamlContent = this.generateYAMLWithComments(cleanConfig);
+    
+    // Write YAML
+    fs.writeFileSync(yamlPath, yamlContent);
+    
+    // Rename old JSON to .json.bak
+    fs.renameSync(jsonPath, `${jsonPath}.bak`);
+    console.log(`   📦 Backed up old config to ${jsonPath}.bak`);
+  }
+
+  /**
+   * Generate YAML string with inline comments
+   */
+  generateYAMLWithComments(config) {
+    // Start with header comment
+    let yamlStr = '# oc-ralph configuration\n\n';
+    
+    // Convert to YAML
+    yamlStr += yaml.dump(config, {
+      indent: 2,
+      lineWidth: 120,
+      noRefs: true
+    });
+    
+    return yamlStr;
   }
 
   /**
@@ -134,117 +185,102 @@ export class ConfigManager {
    * Generate example config
    */
   static generateExampleConfig() {
-    return {
-      "_comment": "oc-ralph configuration - Fill in your values",
-      
-      "opencode": {
-        "baseUrl": "http://localhost:4096",
-        "_comment_baseUrl": "OpenCode server URL",
-        "timeout": 300,
-        "retries": 3,
-        "pollInterval": 2000
-      },
-      
-      "agents": {
-        "_comment": "Configure AI models for each agent type",
-        "architect": {
-          "model": {
-            "providerID": "openai",
-            "_comment_providerID": "Options: openai, anthropic, google, etc.",
-            "modelID": "gpt-5.2-codex",
-            "_comment_modelID": "Model identifier"
-          },
-          "agent": "NightMutyur",
-          "_comment_agent": "OpenCode agent name to use",
-          "timeout": 180
-        },
-        "sculptor": {
-          "model": { "providerID": "openai", "modelID": "gpt-5.2-codex" },
-          "agent": "NightMutyur",
-          "timeout": 180
-        },
-        "sentinel": {
-          "model": { "providerID": "openai", "modelID": "gpt-5.2-codex" },
-          "agent": "NightMutyur",
-          "timeout": 180
-        },
-        "craftsman": {
-          "model": { "providerID": "openai", "modelID": "gpt-5.2-codex" },
-          "agent": "NightMutyur",
-          "timeout": 600
-        },
-        "validator": {
-          "model": { "providerID": "openai", "modelID": "gpt-5.2-codex" },
-          "agent": "NightMutyur",
-          "timeout": 300
-        }
-      },
-      
-      "github": {
-        "owner": "YOUR_GITHUB_ORG",
-        "_comment_owner": "GitHub organization or username",
-        "repo": "YOUR_REPO_NAME",
-        "_comment_repo": "Repository name",
-        "baseBranch": "main",
-        "_comment_baseBranch": "Base branch for feature branches",
-        "labelPrefix": "oc-ralph:",
-        "createPR": true,
-        "autoMergePR": false,
-        "closeSubIssuesOnCompletion": true
-      },
-      
-      "worktree": {
-        "basePath": "/tmp/oc-ralph-worktrees",
-        "_comment_basePath": "Directory for git worktrees",
-        "cleanupOnCompletion": false,
-        "cleanupOnFailure": false
-      },
-      
-      "discord": {
-        "webhookUrl": "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
-        "_comment_webhookUrl": "Discord webhook URL (optional)",
-        "notificationLevel": "all-major-events",
-        "_comment_notificationLevel": "Options: all-major-events, stage-transitions, errors-only",
-        "mentionRoles": []
-      },
-      
-      "execution": {
-        "parallel": {
-          "maxConcurrency": "auto",
-          "_comment_maxConcurrency": "Max parallel test agents",
-          "enableSmartDependencies": true
-        },
-        "retry": {
-          "maxAttempts": 3,
-          "backoffMultiplier": 2,
-          "initialDelayMs": 1000
-        },
-        "testing": {
-          "continueOnFailure": true,
-          "_comment_continueOnFailure": "Continue running tests after failures"
-        }
-      },
-      
-      "statusTable": {
-        "updateIntervalSeconds": 60,
-        "_comment_updateIntervalSeconds": "Status table update frequency",
-        "showRetryHistory": true,
-        "maxRetryHistoryEntries": 5
-      },
-      
-      "logging": {
-        "level": "info",
-        "_comment_level": "Options: debug, info, warn, error",
-        "debugMode": false,
-        "_comment_debugMode": "Enable verbose occlient logging",
-        "logDir": "./logs",
-        "debugLogDir": "./logs/debug"
-      },
-      
-      "cron": {
-        "enabled": false,
-        "_comment_enabled": "Set to true if running from cron"
-      }
-    };
+    return `# oc-ralph configuration
+
+opencode:
+  baseUrl: http://localhost:4096  # OpenCode server URL
+  timeout: 300
+  retries: 3
+  pollInterval: 2000
+
+agents:
+  # Configure AI models for each agent type
+  architect:
+    model:
+      providerID: openai  # Options: openai, anthropic, google, etc.
+      modelID: gpt-5.2-codex
+    agent: NightMutyur  # OpenCode agent name to use
+    timeout: 180
+  
+  sculptor:
+    model:
+      providerID: openai
+      modelID: gpt-5.2-codex
+    agent: NightMutyur
+    timeout: 180
+  
+  sentinel:
+    model:
+      providerID: openai
+      modelID: gpt-5.2-codex
+    agent: NightMutyur
+    timeout: 180
+  
+  craftsman:
+    model:
+      providerID: openai
+      modelID: gpt-5.2-codex
+    agent: NightMutyur
+    timeout: 600
+  
+  validator:
+    model:
+      providerID: openai
+      modelID: gpt-5.2-codex
+    agent: NightMutyur
+    timeout: 300
+
+github:
+  owner: YOUR_GITHUB_ORG       # GitHub organization or username
+  repo: YOUR_REPO_NAME          # Repository name
+  baseBranch: main              # Base branch for feature branches
+  labelPrefix: "oc-ralph:"
+  createPR: true
+  autoMergePR: false
+  closeSubIssuesOnCompletion: true
+
+worktree:
+  basePath: /tmp/oc-ralph-worktrees  # Directory for git worktrees
+  cleanupOnCompletion: false
+  cleanupOnFailure: false
+
+discord:
+  webhookUrl: https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN
+  notificationLevel: all-major-events  # Options: all-major-events, stage-transitions, errors-only
+  mentionRoles: []
+
+execution:
+  parallel:
+    maxConcurrency: auto  # Max parallel test agents
+    enableSmartDependencies: true
+  retry:
+    maxAttempts: 3
+    backoffMultiplier: 2
+    initialDelayMs: 1000
+  testing:
+    continueOnFailure: true  # Continue running tests after failures
+
+statusTable:
+  updateIntervalSeconds: 60  # Status table update frequency
+  showRetryHistory: true
+  maxRetryHistoryEntries: 5
+
+logging:
+  level: info        # Options: debug, info, warn, error
+  debugMode: false   # Enable verbose occlient logging
+  logDir: ./logs
+  debugLogDir: ./logs/debug
+
+service:
+  enabled: true
+  port: 3000
+  host: 0.0.0.0
+  pollInterval: 60000          # GitHub polling interval in milliseconds (60s)
+  queueLabel: "oc-ralph:queue"
+  maxBufferSize: 10000
+
+cron:
+  enabled: false  # Set to true if running from cron
+`;
   }
 }

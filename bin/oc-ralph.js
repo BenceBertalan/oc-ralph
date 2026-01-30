@@ -37,7 +37,7 @@ program
 program
   .command('start <issue-number>')
   .description('Start orchestration for a master issue')
-  .option('--config <path>', 'Config file path', '.oc-ralph/config.json')
+  .option('--config <path>', 'Config file path', '.oc-ralph/config.yaml')
   .option('--debug', 'Enable debug mode')
   .action(async (issueNumber, options) => {
     try {
@@ -52,7 +52,7 @@ program
 program
   .command('status <issue-number>')
   .description('Check orchestration status')
-  .option('--config <path>', 'Config file path', '.oc-ralph/config.json')
+  .option('--config <path>', 'Config file path', '.oc-ralph/config.yaml')
   .action(async (issueNumber, options) => {
     try {
       const cmd = new StatusCommand(logger);
@@ -66,7 +66,7 @@ program
 program
   .command('resume <issue-number>')
   .description('Resume orchestration from current state')
-  .option('--config <path>', 'Config file path', '.oc-ralph/config.json')
+  .option('--config <path>', 'Config file path', '.oc-ralph/config.yaml')
   .option('--debug', 'Enable debug mode')
   .action(async (issueNumber, options) => {
     try {
@@ -81,7 +81,7 @@ program
 program
   .command('cleanup')
   .description('Clean up stale worktrees')
-  .option('--config <path>', 'Config file path', '.oc-ralph/config.json')
+  .option('--config <path>', 'Config file path', '.oc-ralph/config.yaml')
   .option('--force', 'Force cleanup all worktrees')
   .option('--old', 'Clean worktrees older than 7 days')
   .option('--debug', 'Enable debug mode')
@@ -98,7 +98,7 @@ program
 program
   .command('service')
   .description('Run as long-running service (monitors GitHub for queued issues)')
-  .option('--config <path>', 'Config file path', '.oc-ralph/config.json')
+  .option('--config <path>', 'Config file path', '.oc-ralph/config.yaml')
   .action(async (options) => {
     try {
       const cmd = new ServiceCommand(logger);

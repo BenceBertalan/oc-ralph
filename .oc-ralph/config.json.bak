@@ -108,6 +108,20 @@
     "logDir": "./logs",
     "debugLogDir": "./logs/debug"
   },
+  "service": {
+    "enabled": true,
+    "_comment_enabled": "Enable web service mode",
+    "port": 3000,
+    "_comment_port": "Web server port",
+    "host": "0.0.0.0",
+    "_comment_host": "Web server host",
+    "pollInterval": 60000,
+    "_comment_pollInterval": "GitHub polling interval in milliseconds (60s)",
+    "queueLabel": "oc-ralph:queue",
+    "_comment_queueLabel": "Label to watch for queuing issues",
+    "maxBufferSize": 10000,
+    "_comment_maxBufferSize": "Maximum log entries in memory buffer"
+  },
   "cron": {
     "enabled": false,
     "_comment_enabled": "Set to true if running from cron"

@@ -53,13 +53,13 @@ oc-ralph init --repo your-org/your-repo --no-labels
 ```
 
 This creates:
-- `.oc-ralph/config.json` - Configuration file
+- `.oc-ralph/config.yaml` - Configuration file
 - `.oc-ralph/.gitignore` - Git ignore rules
 - GitHub labels (15 labels starting with `oc-ralph:`)
 
 ### Step 2: Configure
 
-Edit `.oc-ralph/config.json`:
+Edit `.oc-ralph/config.yaml`:
 
 ```json
 {
@@ -236,7 +236,7 @@ cat logs/debug/Architect-*.json
 → Start OpenCode server: Check localhost:4096
 
 **Agent timeout**
-→ Increase timeout in `.oc-ralph/config.json`:
+→ Increase timeout in `.oc-ralph/config.yaml`:
 ```json
 {
   "agents": {

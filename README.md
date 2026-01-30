@@ -13,6 +13,7 @@ Fully autonomous orchestration system that transforms GitHub issues into pull re
 - **💬 Discord Notifications** - Webhook notifications for all major orchestration events
 - **🎯 Approval Gates** - Review and approve plans before implementation begins
 - **🚀 Full Automation** - From issue to PR without manual intervention
+- **🌐 Web UI** - Real-time monitoring dashboard with hierarchical log display (NEW!)
 
 ## 📦 Installation
 
@@ -30,49 +31,56 @@ oc-ralph init --repo owner/repo
 ```
 
 This creates:
-- `.oc-ralph/config.json` - Configuration file
+- `.oc-ralph/config.yaml` - Configuration file
 - `.oc-ralph/worktrees.json` - Worktree registry
 - All required GitHub labels
 
 ### 2. Configure
 
-Edit `.oc-ralph/config.json`:
+Edit `.oc-ralph/config.yaml`:
 
-```json
-{
-  "github": {
-    "owner": "your-username",
-    "repo": "your-repo",
-    "baseBranch": "main"
-  },
-  "agents": {
-    "architect": { "timeout": 300 },
-    "sculptor": { "timeout": 300 },
-    "sentinel": { "timeout": 300 },
-    "craftsman": { "timeout": 600 },
-    "janos": { "timeout": 600 }
-  },
-  "execution": {
-    "parallel": { "maxConcurrency": "auto" },
-    "retry": { "maxAttempts": 3, "baseDelayMs": 1000 }
-  },
-  "worktree": {
-    "basePath": "/tmp/oc-ralph-worktrees",
-    "cleanupOnFailure": false
-  },
-  "discord": {
-    "webhookUrl": "https://discord.com/api/webhooks/...",
-    "notificationLevel": "all-major-events"
-  },
-  "statusTable": {
-    "updateIntervalSeconds": 60
-  },
-  "logging": {
-    "level": "info",
-    "debugMode": false
-  }
-}
+```yaml
+github:
+  owner: your-username
+  repo: your-repo
+  baseBranch: main
+
+agents:
+  architect:
+    timeout: 300
+  sculptor:
+    timeout: 300
+  sentinel:
+    timeout: 300
+  craftsman:
+    timeout: 600
+  janos:
+    timeout: 600
+
+execution:
+  parallel:
+    maxConcurrency: auto
+  retry:
+    maxAttempts: 3
+    baseDelayMs: 1000
+
+worktree:
+  basePath: /tmp/oc-ralph-worktrees
+  cleanupOnFailure: false
+
+discord:
+  webhookUrl: https://discord.com/api/webhooks/...
+  notificationLevel: all-major-events
+
+statusTable:
+  updateIntervalSeconds: 60
+
+logging:
+  level: info
+  debugMode: false
 ```
+
+> **Note**: If you have an existing `config.json`, it will be automatically converted to `config.yaml` the first time you run any command. Your old file will be backed up as `config.json.bak`.
 
 ### 3. Create a master issue
 
@@ -138,8 +146,51 @@ oc-ralph start 123 [--config path] [--debug]
 ```
 
 Options:
-- `--config` - Config file path (default: `.oc-ralph/config.json`)
+- `--config` - Config file path (default: `.oc-ralph/config.yaml`)
 - `--debug` - Enable debug mode with verbose logging
+
+### `oc-ralph service`
+
+**NEW!** Start the web service for continuous orchestration with real-time monitoring.
+
+```bash
+oc-ralph service [--config path]
+```
+
+The service:
+- Polls GitHub every 60s for issues labeled `oc-ralph:queue`
+- Automatically processes issues sequentially
+- Provides a web UI at `http://localhost:3000`
+- Streams logs in real-time via WebSocket
+- Shows queue status and orchestration history
+
+**Web UI Features:**
+- 📊 Hierarchical log view (Issues → Stages → Logs)
+- 🔄 Real-time updates via WebSocket
+- 📱 Mobile-responsive design
+- 🎯 Queue status monitoring
+- 📈 Success rate and history tracking
+
+**Quick Start:**
+```bash
+# Add service config to .oc-ralph/config.yaml
+service:
+  enabled: true
+  port: 3000
+  host: 0.0.0.0
+  pollInterval: 60000
+  queueLabel: "oc-ralph:queue"
+
+# Start service
+oc-ralph service --config .oc-ralph/config.yaml
+
+# Open web UI
+open http://localhost:3000
+
+# Add oc-ralph:queue label to any issue to process it
+```
+
+See `WEB_UI_QUICKSTART.md` for detailed setup instructions.
 
 ### `oc-ralph status <issue-number>`
 
