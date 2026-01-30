@@ -283,13 +283,14 @@ logging:
   logDir: ./logs
   debugLogDir: ./logs/debug
 
+# Web service configuration (for 'oc-ralph service' command)
 service:
-  enabled: true
-  port: 3000
-  host: 0.0.0.0
+  enabled: true                # Enable web UI and service mode
+  port: 3000                   # HTTP server port
+  host: 0.0.0.0                # Listen on all interfaces (use 127.0.0.1 for localhost only)
   pollInterval: 60000          # GitHub polling interval in milliseconds (60s)
-  queueLabel: "oc-ralph:queue"
-  maxBufferSize: 10000
+  queueLabel: "oc-ralph:queue" # Label to identify queued issues
+  maxBufferSize: 10000         # Maximum log entries to buffer for streaming
 
 cron:
   enabled: false  # Set to true if running from cron
