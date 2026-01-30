@@ -10,6 +10,7 @@ export class Logger {
     this.logDir = options.logDir || './logs';
     this.enableConsole = options.enableConsole !== false;
     this.enableFile = options.enableFile !== false;
+    this.streamManager = options.streamManager || null;
     
     this.levels = {
       debug: 0,
@@ -23,6 +24,13 @@ export class Logger {
     if (this.enableFile) {
       this.ensureLogDir();
     }
+  }
+
+  /**
+   * Set stream manager for real-time log streaming
+   */
+  setStreamManager(streamManager) {
+    this.streamManager = streamManager;
   }
 
   ensureLogDir() {
@@ -51,6 +59,11 @@ export class Logger {
 
     const logEntry = this.formatMessage(level, message, context);
     const logString = JSON.stringify(logEntry);
+
+    // Stream to real-time subscribers
+    if (this.streamManager) {
+      this.streamManager.onLog(logEntry);
+    }
 
     // Console output with colors
     if (this.enableConsole) {

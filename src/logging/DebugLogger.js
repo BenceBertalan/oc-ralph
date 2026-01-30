@@ -10,10 +10,18 @@ export class DebugLogger {
     this.debugMode = debugMode;
     this.agentLogs = [];
     this.debugLogDir = './logs/debug';
+    this.streamManager = null;
     
     if (this.debugMode) {
       this.ensureDebugLogDir();
     }
+  }
+
+  /**
+   * Set stream manager for real-time log streaming
+   */
+  setStreamManager(streamManager) {
+    this.streamManager = streamManager;
   }
 
   ensureDebugLogDir() {
@@ -116,6 +124,19 @@ export class DebugLogger {
         type: event.type,
         data: event.data || {}
       });
+      
+      // Send event to stream manager if available
+      if (this.streamManager) {
+        this.streamManager.onLog({
+          timestamp: new Date().toISOString(),
+          level: 'debug',
+          message: `[${agentName}] occlient event: ${event.type}`,
+          agentName,
+          agentLogId,
+          eventType: event.type,
+          eventData: event.data
+        });
+      }
       
       // Log event type and basic info
       this.baseLogger.debug(`[DEBUG] [${agentName}] occlient event: ${event.type}`, {

@@ -9,6 +9,7 @@ import { StartCommand } from '../src/commands/StartCommand.js';
 import { StatusCommand } from '../src/commands/StatusCommand.js';
 import { ResumeCommand } from '../src/commands/ResumeCommand.js';
 import { CleanupCommand } from '../src/commands/CleanupCommand.js';
+import { ServiceCommand } from '../src/commands/ServiceCommand.js';
 import { Logger } from '../src/logging/Logger.js';
 
 const logger = new Logger({ level: 'info' });
@@ -90,6 +91,20 @@ program
       await cmd.execute(options);
     } catch (error) {
       logger.error('Cleanup command failed', { error: error.message });
+      process.exit(1);
+    }
+  });
+
+program
+  .command('service')
+  .description('Run as long-running service (monitors GitHub for queued issues)')
+  .option('--config <path>', 'Config file path', '.oc-ralph/config.json')
+  .action(async (options) => {
+    try {
+      const cmd = new ServiceCommand(logger);
+      await cmd.execute(options);
+    } catch (error) {
+      logger.error('Service command failed', { error: error.message });
       process.exit(1);
     }
   });
